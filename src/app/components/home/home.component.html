@@ -1,0 +1,40 @@
+<p-toast></p-toast>
+<p class="loading" *ngIf="loading">Đang tải dữ liệu</p>
+<p-progressBar
+  *ngIf="loading"
+  mode="indeterminate"
+  [style]="{ height: '6px' }"
+></p-progressBar>
+<div class="card" *ngIf="!loading">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <p-dropdown
+        [options]="restaurants"
+        [(ngModel)]="selectedRestaurant"
+        optionLabel="name"
+        [filter]="true"
+        filterBy="name"
+        [showClear]="true"
+        placeholder="Chọn nhà hàng"
+        class="p-mr-2"
+        autoWidth="false"
+        [style]="{ width: '300px' }"
+        (onChange)="onChangeDropDown()"
+      >
+        <ng-template pTemplate="selectedItem">
+          <div
+            class="restaurant-item country-item-value"
+            *ngIf="selectedRestaurant"
+          >
+            <div>{{ selectedRestaurant.name }}</div>
+          </div>
+        </ng-template>
+        <ng-template let-restaurant pTemplate="item">
+          <div class="restaurant-item">
+            <div>{{ restaurant.name }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </ng-template>
+  </p-toolbar>
+</div>

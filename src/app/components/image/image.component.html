@@ -1,0 +1,42 @@
+<p-toast></p-toast>
+
+<div class="card">
+  <p-fileUpload
+    #form
+    name="demo[]"
+    (uploadHandler)="onUpload($event, form)"
+    (onSelect)="onSelect($event)"
+    (onRemove)="onRemove($event)"
+    (onClear)="onClear()"
+    [customUpload]="true"
+    [multiple]="true"
+    accept="image/*"
+    [maxFileSize]="1000000"
+  >
+  </p-fileUpload>
+
+  <br />
+  <!-- <img [src]="imagePath" width="300"/> -->
+  <p class="loading" *ngIf="loading">Đang tải dữ liệu</p>
+
+  <p-progressBar
+    *ngIf="loading"
+    mode="indeterminate"
+    [style]="{ height: '6px' }"
+  ></p-progressBar>
+
+  <div class="card-container">
+    <p-card
+      *ngFor="let item of imagePathArr"
+      [subheader]="item.name"
+      [style]="{ width: '300px' }"
+      styleClass="p-card-shadow"
+      class="cardImage"
+    >
+
+      <ng-template pTemplate="header">
+        <img alt="image" [src]="item.imagePath" width="300" class="image" />
+      </ng-template>
+    </p-card>
+  </div>
+</div>

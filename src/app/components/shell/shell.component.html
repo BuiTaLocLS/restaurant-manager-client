@@ -1,0 +1,17 @@
+<div class="vh-100">
+  <p-menubar [model]="items" [style]="{ height: '80px' }">
+    <div class="info-container">
+      <div
+        class="restaurant-name"
+        *ngIf="selectedRestaurant?.id !== 0 && selectedRestaurant !== null" [@enterAnimation]
+      >
+        <i class="pi pi-server"></i>
+        <p>{{ selectedRestaurant.name }}</p>
+      </div>
+      <div class="name" [@enterAnimation]>
+        <p>{{ getUsername() }}</p>
+      </div>
+    </div>
+  </p-menubar>
+  <router-outlet></router-outlet>
+</div>

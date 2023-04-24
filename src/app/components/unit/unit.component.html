@@ -1,0 +1,201 @@
+<p-toast></p-toast>
+<p class="loading" *ngIf="loading">Đang tải dữ liệu</p>
+<p-progressBar
+  *ngIf="loading"
+  mode="indeterminate"
+  [style]="{ height: '6px' }"
+></p-progressBar>
+<div class="card" *ngIf="!loading">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <button
+        pButton
+        pRipple
+        label="Thêm đơn vi"
+        icon="pi pi-plus"
+        class="p-button-success p-mr-2"
+        (click)="openNew()"
+      ></button>
+    </ng-template>
+
+    <ng-template pTemplate="right">
+      <!-- <p-fileUpload mode="basic" accept="image/*" [maxFileUnit]="1000000" label="Import" chooseLabel="Import"
+                class="p-mr-2 p-d-inline-block"></p-fileUpload>
+            <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button> -->
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+          placeholder="Search..."
+        />
+      </span>
+    </ng-template>
+  </p-toolbar>
+  <p-table
+    #dt
+    [value]="displayUnites"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['name', 'description']"
+    [rowHover]="true"
+    dataKey="id"
+  >
+    <!-- <ng-template pTemplate="caption">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        <h5 class="p-m-0">Manage Units</h5>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
+        </span>
+      </div>
+    </ng-template> -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="name">
+          Tên <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="description">
+          Chú thích <p-sortIcon field="description"></p-sortIcon>
+        </th>
+        <th pSortableColumn="created">
+          Ngày tạo <p-sortIcon field="created"></p-sortIcon>
+        </th>
+        <!-- <th pSortableColumn="createdUser">Người tạo <p-sortIcon field="createdUser"></p-sortIcon></th> -->
+        <th pSortableColumn="updated">
+          Ngày sửa <p-sortIcon field="updated"></p-sortIcon>
+        </th>
+        <!-- <th pSortableColumn="updatedUser">Người sửa cuối <p-sortIcon field="updatedUser"></p-sortIcon></th> -->
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-expanded="expanded" let-unit>
+      <tr>
+        <td class="flex-in-column">
+          <button
+            type="button"
+            pButton
+            pRipple
+            [pRowToggler]="unit"
+            class="p-button-text p-button-rounded p-button-plain mr-2"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          ></button>
+          {{ unit.name }}
+        </td>
+        <td>{{ unit.description }}</td>
+        <td>
+          {{ unit.created | date : "dd/MM/yyyy" }} |
+          {{ unit.createdUser?.userName }}
+        </td>
+        <td>
+          {{ unit.updated | date : "dd/MM/yyyy" }} |
+          {{ unit.updatedUser?.userName }}
+        </td>
+        <td>
+          <button
+            pButton
+            pRipple
+            icon="pi pi-pencil"
+            class="p-button-info p-mr-2"
+            (click)="editUnit(unit)"
+          ></button>
+          <button
+            pButton
+            pRipple
+            icon="pi pi-trash"
+            class="p-button-danger"
+            (click)="deleteUnit(unit)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-expanded let-unit>
+      <!-- <tr *ngFor="let item of unit.sizes">
+        <td>
+          {{ item.name }}
+        </td>
+        <td>
+          {{ item.description}}
+        </td>
+        <td>
+          {{ item.created | date : "dd/MM/yyyy"}}
+        </td>
+        <td>
+          {{ item.updated | date : "dd/MM/yyyy"}}
+        </td>
+      </tr> -->
+  <tr>
+    <td colspan="5" style="width: 80%;">
+      <div style="padding: 20px;">
+        <app-size [unitID]="unit.id"></app-size>
+      </div>
+    </td>
+  </tr>
+    </ng-template>
+    <!-- <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        In total there are {{units ? units.length : 0 }} units.
+      </div>
+    </ng-template> -->
+  </p-table>
+</div>
+
+<p-dialog
+  [(visible)]="unitDialog"
+  [style]="{ width: '450px' }"
+  header="Chi tiết đơn vị"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="p-field">
+      <label for="name" class="my-lable">Tên</label>
+      <input
+        type="text"
+        pInputText
+        id="name"
+        [(ngModel)]="unit.name"
+        required
+        autofocus
+      />
+      <small class="p-invalid" *ngIf="submitted && !unit.name"
+        >Name is required.</small
+      >
+    </div>
+
+    <div class="p-field">
+      <label for="description" class="my-lable">Mô tả</label>
+      <textarea
+        id="description"
+        pInputTextarea
+        [(ngModel)]="unit.description"
+        required
+        rows="3"
+        cols="20"
+      ></textarea>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="hideDialog()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      label="Save"
+      icon="pi pi-check"
+      class="p-button-text"
+      (click)="saveUnit()"
+    ></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

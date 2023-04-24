@@ -1,0 +1,32 @@
+.info-container {
+  height: 100%;
+  min-width: 150px;
+  margin-right: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  .restaurant-name {
+    min-width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    column-gap: 10px;
+    i {
+      font-size: 1rem;
+    }
+    p {
+      margin: 0 !important;
+    }
+  }
+
+  .name {
+    height: 100%;
+    p {
+      margin: 0 !important;
+      line-height: 1rem;
+    }
+  }
+}

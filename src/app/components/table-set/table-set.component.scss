@@ -1,0 +1,17 @@
+.table-shadow {
+  width: 200px;
+  height: 100px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: rgb(74, 73, 73);
+  border-radius: 10px;
+
+  text-align: center;
+  vertical-align: middle;
+  line-height: 100px;
+  transition: 0.4s;
+
+  &:hover{
+    box-shadow: rgba(0, 56, 96, 0.4) 0px 2px 4px, rgba(0, 56, 96, 0.3) 0px 7px 13px -3px, rgba(0, 56, 96, 0.2) 0px -3px 0px inset;
+  }
+}

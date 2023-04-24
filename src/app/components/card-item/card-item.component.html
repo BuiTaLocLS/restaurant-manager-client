@@ -1,0 +1,10 @@
+<p-card header="{{item?.food?.name}}" subheader="{{item?.price|currency: 'VND':'symbol':'0.0-0'}}" [style]="{width: '300px'}" styleClass="p-card-shadow">
+  <ng-template pTemplate="header">
+      <img alt="Card" [src]="item?.food?.domSanitizer" width="200">
+  </ng-template>
+  <p>{{item?.food?.description}}</p>
+  <ng-template pTemplate="footer">
+      <p-button label="Đặt món" icon="pi pi-check" (click)="order()"></p-button>
+  </ng-template>
+
+</p-card>

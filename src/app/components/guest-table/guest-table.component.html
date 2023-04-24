@@ -1,0 +1,243 @@
+<p-toast></p-toast>
+<p class="loading" *ngIf="loading">Đang tải dữ liệu</p>
+<p-progressBar
+  *ngIf="loading"
+  mode="indeterminate"
+  [style]="{ height: '6px' }"
+></p-progressBar>
+<div class="card" *ngIf="!loading">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <button
+        pButton
+        pRipple
+        label="Thêm bàn ăn"
+        icon="pi pi-plus"
+        class="p-button-success p-mr-2"
+        (click)="openNew()"
+      ></button>
+    </ng-template>
+
+    <ng-template pTemplate="right">
+      <!-- <p-fileUpload mode="basic" accept="image/*" [maxFileGuestTable]="1000000" label="Import" chooseLabel="Import"
+                class="p-mr-2 p-d-inline-block"></p-fileUpload>
+            <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button> -->
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+          placeholder="Search..."
+        />
+      </span>
+    </ng-template>
+  </p-toolbar>
+  <p-table
+    #dt
+    [value]="displayGuestTablees"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['name', 'description']"
+    [rowHover]="true"
+    dataKey="id"
+  >
+    <!-- <ng-template pTemplate="caption">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        <h5 class="p-m-0">Manage GuestTables</h5>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
+        </span>
+      </div>
+    </ng-template> -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="name">
+          Tên <p-sortIcon field="name"></p-sortIcon>
+        </th>
+
+        <th pSortableColumn="description">
+          Chú thích <p-sortIcon field="description"></p-sortIcon>
+        </th>
+        <th pSortableColumn="location">
+          Khu vực <p-sortIcon field="location"></p-sortIcon>
+        </th>
+        <th pSortableColumn="status">
+          Tình trạng <p-sortIcon field="status"></p-sortIcon>
+        </th>
+
+
+        <th pSortableColumn="created">
+          Ngày tạo <p-sortIcon field="created"></p-sortIcon>
+        </th>
+        <!-- <th pSortableColumn="createdUser">Người tạo <p-sortIcon field="createdUser"></p-sortIcon></th> -->
+        <th pSortableColumn="updated">
+          Ngày sửa <p-sortIcon field="updated"></p-sortIcon>
+        </th>
+        <!-- <th pSortableColumn="updatedUser">Người sửa cuối <p-sortIcon field="updatedUser"></p-sortIcon></th> -->
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-guestTable>
+      <tr>
+        <td>{{ guestTable.name }}</td>
+        <td>{{ guestTable.description }}</td>
+        <td>{{ guestTable.location.name }}</td>
+        <td>{{ guestTable.status.name }}</td>
+        <td>
+          {{ guestTable.created | date : "dd/MM/yyyy" }} |
+          {{ guestTable.createdUser?.userName }}
+        </td>
+        <td>
+          {{ guestTable.updated | date : "dd/MM/yyyy" }} |
+          {{ guestTable.updatedUser?.userName }}
+        </td>
+        <td>
+          <button
+            pButton
+            pRipple
+            icon="pi pi-pencil"
+            class="p-button-info p-mr-2"
+            (click)="editGuestTable(guestTable)"
+          ></button>
+          <button
+            pButton
+            pRipple
+            icon="pi pi-trash"
+            class="p-button-danger"
+            (click)="deleteGuestTable(guestTable)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <!-- <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        In total there are {{guestTables ? guestTables.length : 0 }} guestTables.
+      </div>
+    </ng-template> -->
+  </p-table>
+</div>
+
+<p-dialog
+  [(visible)]="guestTableDialog"
+  [style]="{ width: '450px' }"
+  header="Chi tiết bàn ăn"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="p-field">
+      <label for="name" class="my-lable">Tên</label>
+      <input
+        type="text"
+        pInputText
+        id="name"
+        [(ngModel)]="guestTable.name"
+        required
+        autofocus
+      />
+      <small class="p-invalid" *ngIf="submitted && !guestTable.name"
+        >Name is required.</small
+      >
+    </div>
+
+    <div class="p-field">
+      <label for="status" class="my-lable">Tên</label>
+
+      <p-dropdown
+        [options]="statuss"
+        [(ngModel)]="selectedStatus"
+        optionLabel="name"
+        [filter]="true"
+        filterBy="name"
+        [showClear]="true"
+        placeholder="Chọn nhà hàng"
+        class="p-mr-2"
+        autoWidth="false"
+        [style]="{ width: '300px' }"
+        (onChange)="onChangeDropDown()"
+      >
+        <ng-template pTemplate="selectedItem">
+          <div
+            class="status-item country-item-value"
+            *ngIf="selectedStatus"
+          >
+            <div>{{ selectedStatus.name }}</div>
+          </div>
+        </ng-template>
+        <ng-template let-status pTemplate="item">
+          <div class="status-item">
+            <div>{{ status.name }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+
+      <p-dropdown
+      [options]="locations"
+      [(ngModel)]="selectedLocation"
+      optionLabel="name"
+      [filter]="true"
+      filterBy="name"
+      [showClear]="true"
+      placeholder="Chọn nhà hàng"
+      class="p-mr-2"
+      autoWidth="false"
+      [style]="{ width: '300px' }"
+      (onChange)="onChangeDropDown()"
+    >
+      <ng-template pTemplate="selectedItem">
+        <div
+          class="location-item country-item-value"
+          *ngIf="selectedLocation"
+        >
+          <div>{{ selectedLocation.name }}</div>
+        </div>
+      </ng-template>
+      <ng-template let-location pTemplate="item">
+        <div class="location-item">
+          <div>{{ location.name }}</div>
+        </div>
+      </ng-template>
+    </p-dropdown>
+
+      <small class="p-invalid" *ngIf="submitted && !guestTable.name"
+        >Status is required.</small
+      >
+    </div>
+
+    <div class="p-field">
+      <label for="description" class="my-lable">Mô tả</label>
+      <textarea
+        id="description"
+        pInputTextarea
+        [(ngModel)]="guestTable.description"
+        required
+        rows="3"
+        cols="20"
+      ></textarea>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="hideDialog()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      label="Save"
+      icon="pi pi-check"
+      class="p-button-text"
+      (click)="saveGuestTable()"
+    ></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

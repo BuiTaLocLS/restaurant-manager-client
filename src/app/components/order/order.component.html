@@ -1,0 +1,32 @@
+<p-toast></p-toast>
+<div class="order-container" *ngIf="!isSelectTable">
+  <div *ngFor="let guestTable of guestTables">
+    <div class="col-1">
+      <app-table-set
+        name="{{guestTable.name}}"
+        (click)="orderForTable(guestTable)"
+        style="cursor: pointer;"
+      ></app-table-set>
+    </div>
+  </div>
+</div>
+<div *ngIf="isSelectTable" [style]="{  marginTop: '10px' }"  >
+  <div class="flex align-items-center p-ml-4">
+
+    <button pButton type="button" icon="pi pi-angle-double-left" iconPos="left" (click)="backToTable()" class="p-mr-6 back-button"></button>
+
+    <p-chip label="Tất cả" [style]="{  marginRight: '10px', marginTop: '10px' }"  (click)="removeSelectChip()"></p-chip>
+    <p-chip [label]="item.name" [style]="{  marginRight: '10px', marginTop: '10px' }" *ngFor="let item of categorys" (click)="onSelectChip(item)"></p-chip>
+
+    <a  (click)="isViewCart = !isViewCart" class="p-mr-6">Hóa đơn</a>
+  </div>
+
+  <div class="card-container" >
+    <div *ngFor="let item of selectedItems">
+      <app-card-item [item]="item" (callOrder)="order($event)" ></app-card-item>
+    </div>
+  </div>
+</div>
+<div class="topConner" [class]="{myCartOpen: isViewCart, myCartClose: !isViewCart}">
+  <app-cart [table]="selectedGuestTable" [items]="orderItems" [sum]="sum" (callOrderSuccess)="callOrderSuccess()"></app-cart>
+</div>
